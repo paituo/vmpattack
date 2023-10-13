@@ -102,8 +102,9 @@ namespace vmpattack
         {
             // Check if we're within bounds.
             //
-            if ( offset >= size )
-                break;
+			//if (offset >= size)
+			if (offset >= end_rva)
+					break;
 
             // In case disassembly failed (due to invalid instructions), try to continue by incrementing offset.
             //

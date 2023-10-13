@@ -50,7 +50,7 @@ namespace vmpattack
         vm_analysis_context bridge_analysis_context = vm_analysis_context( &copied_stream, state );
 
         x86_reg fetch_reg;
-        size_t fetch_reg_size = 4;
+        uint64_t fetch_reg_size = 4;
 
         x86_reg rolling_key_reg = state->rolling_key_reg;
 

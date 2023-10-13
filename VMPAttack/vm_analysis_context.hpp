@@ -53,7 +53,7 @@ namespace vmpattack
             // Drop const.
             //
             x86_reg stack_reg = state->stack_reg;
-
+            
             return generic_reg_imm( X86_INS_ADD, { stack_reg, true }, imm, false )
                 ->cast<vm_analysis_context*>();
         }
@@ -105,7 +105,7 @@ namespace vmpattack
         // Constraints: reg:    the register the memory is stored in.
         //              size:   the size of the memory that was read.
         //
-        vm_analysis_context* fetch_vip( inout<x86_reg> reg, inout<size_t> size )
+        vm_analysis_context* fetch_vip( inout<x86_reg> reg, inout<uint64_t> size )
         {
             // MOV(ZX) %reg, %size:[VIP]
             //
@@ -146,7 +146,7 @@ namespace vmpattack
         //              size:   the size of the destination that was read.
         //              disp:   the stack displacement.
         //
-        vm_analysis_context* fetch_vsp( inout<x86_reg> dst, inout<size_t> size, inout<int64_t> disp )
+        vm_analysis_context* fetch_vsp( inout<x86_reg> dst, inout<uint64_t> size, inout<int64_t> disp )
         {
             // mov(zx) %size:%dst, [VSP + %disp]
             //
@@ -194,7 +194,7 @@ namespace vmpattack
         // Constraints: src:    the source register. Comparison via base.
         //              size:   the size of the destination that was written.
         //
-        vm_analysis_context* store_vsp( inout<x86_reg> src, inout<size_t> size )
+        vm_analysis_context* store_vsp( inout<x86_reg> src, inout<uint64_t> size )
         {
             // mov %size:[VSP], %src
             //
@@ -235,7 +235,7 @@ namespace vmpattack
         //              size:   the size of the virtual context that was read.
         //              disp:   the optional context displacement register. Comparison via base.
         //
-        vm_analysis_context* fetch_ctx( inout<x86_reg> dst, inout<size_t> size, inout<x86_reg> disp )
+        vm_analysis_context* fetch_ctx( inout<x86_reg> dst, inout<uint64_t> size, inout<x86_reg> disp )
         {
             // mov(zx) %dst, %size:[VCTX + %disp]
             //

@@ -20,7 +20,7 @@ namespace vmpattack
 
             x86_reg pop_reg, operand_reg;
             int64_t pop_disp = 0;
-            size_t pop_size, operand_size;
+            uint64_t pop_size, operand_size;
             size_t store_size;
 
             // Copy so we don't corrupt the state.
@@ -73,7 +73,7 @@ namespace vmpattack
                     return false;
             }
 
-            vm_operand op = { vm_operand_reg, pop_size, operand_size };
+            vm_operand op = { vm_operand_reg, size_t(pop_size), size_t(operand_size) };
             info->operands.push_back( { op, std::move( operand_chain ) } );
 
             return true;
@@ -99,7 +99,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg stack_reg = state->stack_reg;
-            size_t pop_size = 8;
+            uint64_t pop_size = 8;
             int64_t disp = 0;
 
             auto result = ( &stream_context )
@@ -135,7 +135,7 @@ namespace vmpattack
                 vm_analysis_context stream_context = vm_analysis_context( &copied_stream, state );
 
                 x86_reg operand_reg;
-                size_t operand_size, stack_store_size;
+                uint64_t operand_size, stack_store_size;
 
                 auto result = ( &stream_context )
                     // MOV(ZX) %operand_size:%operand_reg, [VIP]
@@ -155,7 +155,7 @@ namespace vmpattack
                     //
                     *stream = copied_stream;
 
-                    vm_operand op = { vm_operand_imm, stack_store_size, operand_size };
+                    vm_operand op = { vm_operand_imm, size_t(stack_store_size), size_t(operand_size) };
                     info->operands.push_back( { op, std::move( operand_chain ) }  );
 
                     return true;
@@ -173,7 +173,8 @@ namespace vmpattack
                 vm_analysis_context stream_context = vm_analysis_context( &copied_stream, state );
 
                 x86_reg operand_reg, context_reg;
-                size_t operand_size, stack_store_size;
+                uint64_t operand_size;
+                uint64_t stack_store_size;
 
                 auto result = ( &stream_context )
                     // MOV(ZX) %operand_size:%operand_reg, [VIP]
@@ -200,7 +201,7 @@ namespace vmpattack
                     //
                     *stream = copied_stream;
 
-                    vm_operand op = { vm_operand_reg, stack_store_size, operand_size };
+                    vm_operand op = { vm_operand_reg, size_t(stack_store_size), size_t(operand_size) };
                     info->operands.push_back( { op, std::move( operand_chain ) } );
 
                     return true;
@@ -257,7 +258,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg stored_stack_reg, stack_reg = state->stack_reg;
-            size_t store_size;
+            uint64_t store_size;
 
             auto result = ( &stream_context )
                 // MOV %stored_stack_reg, VSP
@@ -295,7 +296,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1;
-            size_t s0, s1;
+            uint64_t s0, s1;
             int64_t initial_disp = 0;
 
             auto result = ( &stream_context )
@@ -365,7 +366,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1;
-            size_t s0, s1;
+            uint64_t s0, s1;
             int64_t initial_disp = 0;
 
             auto result = ( &stream_context )
@@ -434,7 +435,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1;
-            size_t s0, s1;
+            uint64_t s0, s1;
             int64_t initial_disp = 0;
 
             auto result = ( &stream_context )
@@ -502,7 +503,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1;
-            size_t aligned_size, size;
+            uint64_t aligned_size, size;
             int64_t initial_disp = 0;
 
             auto result = ( &stream_context )
@@ -548,8 +549,8 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1;
-            size_t s0 = 8;
-            size_t s1;
+            uint64_t s0 = 8;
+            uint64_t s1;
             int64_t initial_disp = 0;
 
             auto result = ( &stream_context )
@@ -593,7 +594,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1, r2;
-            size_t size, shift_size;
+            uint64_t size, shift_size;
             int64_t last_disp;
             int64_t initial_disp = 0;
 
@@ -673,7 +674,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1, r2;
-            size_t size, shift_size;
+            uint64_t size, shift_size;
             int64_t last_disp;
             int64_t initial_disp = 0;
 
@@ -751,7 +752,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1;
-            size_t s0, s1;
+            uint64_t s0, s1;
             int64_t initial_disp = 0;
 
             auto result = ( &stream_context )
@@ -819,7 +820,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1;
-            size_t s0, s1;
+            uint64_t s0, s1;
             int64_t initial_disp = 0;
 
             auto result = ( &stream_context )
@@ -914,7 +915,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0;
-            size_t s0;
+            uint64_t s0;
             int64_t initial_disp = 0;
 
             auto result = ( &stream_context )
@@ -959,7 +960,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1;
-            size_t s0 = 8;
+            uint64_t s0 = 8;
             int64_t initial_disp = 0;
 
             auto result = ( &stream_context )
@@ -998,7 +999,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1;
-            size_t s0 = 8;
+            uint64_t s0 = 8;
             int64_t initial_disp = 0;
 
             auto result = ( &stream_context )
@@ -1035,7 +1036,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1;
-            size_t s0 = 8, s1;
+            uint64_t s0 = 8, s1;
             int64_t initial_disp = 0, d1 = 8;
 
             const instruction* lock_or_ins = nullptr;
@@ -1149,7 +1150,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1, r2;
-            size_t s0, s1;
+            uint64_t s0, s1;
             int64_t initial_disp = 0;
             int64_t disp, divisor_disp;
 
@@ -1222,7 +1223,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1, r2;
-            size_t s0, s1;
+            uint64_t s0, s1;
             int64_t initial_disp = 0;
             int64_t disp, divisor_disp;
 
@@ -1295,7 +1296,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1;
-            size_t s0;
+            uint64_t s0;
             int64_t initial_disp = 0;
             int64_t disp;
 
@@ -1362,7 +1363,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1;
-            size_t s0;
+            uint64_t s0;
             int64_t initial_disp = 0;
             int64_t disp;
 
@@ -1433,7 +1434,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1;
-            size_t s0, s1;
+            uint64_t s0, s1;
             int64_t initial_disp = 0;
 
             auto result = ( &stream_context )
@@ -1508,7 +1509,7 @@ namespace vmpattack
             vm_analysis_context stream_context = vm_analysis_context( stream, state );
 
             x86_reg r0, r1;
-            size_t s0, s1;
+            uint64_t s0, s1;
             int64_t initial_disp = 0;
 
             auto result = ( &stream_context )
@@ -1634,7 +1635,7 @@ namespace vmpattack
 
             x86_reg reg, flow_reg;
             int64_t initial_disp = 0;
-            size_t reg_size = 8;
+            uint64_t reg_size = 8;
             uint64_t new_flow_rva;
 
             x86_reg stack_reg = state->stack_reg;
@@ -1667,7 +1668,7 @@ namespace vmpattack
             analysis_context post_exec_context = analysis_context( &copied_stream );
 
             x86_reg vip_reg, vip_fetch_reg;
-            size_t vip_fetch_size = 4;
+            uint64_t vip_fetch_size = 4;
 
             result = ( &post_exec_context )
                 // MOV %vip_fetch_size:%vip_fetch-reg, [%vip_reg]

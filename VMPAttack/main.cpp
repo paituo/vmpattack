@@ -45,7 +45,7 @@ namespace vmpattack
 
         std::vector<uint8_t> buffer = read_file( input_file_path.string().c_str() );
 
-        log<CON_GRN>( "** Loaded raw image buffer @ 0x%p of size 0x%llx\r\n", buffer.data(), buffer.size() );
+        log<CON_GRN>( "** Loaded raw image buffer @ 0x%p of size 0x%X\r\n", buffer.data(), buffer.size() );
 
         vmpattack instance( buffer );
         
@@ -54,7 +54,7 @@ namespace vmpattack
         log<CON_GRN>( "** Found %u virtualized routines:\r\n", scan_results.size() );
 
         for ( const scan_result& scan_result : scan_results )
-            log<CON_CYN>( "\t** RVA 0x%llx VMEntry 0x%llx Stub 0x%llx\r\n", scan_result.rva, scan_result.job.vmentry_rva, scan_result.job.entry_stub );
+            log<CON_CYN>( "\t** RVA 0x%X VMEntry 0x%X Stub 0x%X\r\n", scan_result.rva, scan_result.job.vmentry_rva, scan_result.job.entry_stub );
 
         log( "\r\n" );
 
@@ -64,7 +64,7 @@ namespace vmpattack
 
         for ( const scan_result& scan_result : scan_results )
         {
-            log<CON_YLW>( "** Devirtualizing routine %i/%i @ 0x%llx...\r\n", i + 1, scan_results.size(), scan_result.rva );
+            log<CON_YLW>( "** Devirtualizing routine %i/%i @ 0x%X...\r\n", i + 1, scan_results.size(), scan_result.rva );
 
             std::optional<vtil::routine*> routine = instance.lift( scan_result.job );
 
@@ -73,7 +73,11 @@ namespace vmpattack
                 log<CON_GRN>( "\t** Lifting success\r\n" );
                 lifted_routines.push_back( *routine );
 
-                std::string save_path = output_path / vtil::format::str( "0x%llx.vtil", scan_result.rva );
+//#ifdef _DEBUG
+//				vtil::debug::dump(*routine);
+//#endif
+
+                std::wstring save_path = output_path / vtil::format::str( "0x%X.vtil", scan_result.rva );
                 vtil::save_routine( *routine, save_path );
 
                 log<CON_GRN>( "\t** Unoptimized Saved to %s\r\n", save_path );
@@ -82,11 +86,11 @@ namespace vmpattack
 
                 log<CON_GRN>( "\t** Optimization success\r\n" );
 
-#ifdef _DEBUG
-                vtil::debug::dump( *routine );
-#endif
-
-                std::string optimized_save_path = output_path / vtil::format::str( "0x%llx-Optimized.vtil", scan_result.rva );
+//#ifdef _DEBUG
+//                vtil::debug::dump( *routine );
+//#endif
+//
+                std::wstring optimized_save_path = output_path / vtil::format::str( "0x%X-Optimized.vtil", scan_result.rva );
                 vtil::save_routine( *routine, optimized_save_path );
 
                 log<CON_GRN>( "\t** Optimized Saved to %s\r\n", save_path );

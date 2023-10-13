@@ -8,8 +8,11 @@ namespace vmpattack
     // Defaults.
     //
     const cs_arch cs_default_arch = CS_ARCH_X86;
+#ifdef _WIN64
     const cs_mode cs_default_mode = CS_MODE_64;
-
+#else
+	const cs_mode cs_default_mode = CS_MODE_32;
+#endif // _WIN64
     // Specifies the desired behaviour of the auto disassembler when a jump condition is
     // encountered
     //

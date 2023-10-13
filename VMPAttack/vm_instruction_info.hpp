@@ -41,9 +41,9 @@ namespace vmpattack
 
         // Constructor.
         //
-        vm_operand( vm_operand_type type, size_t size, size_t byte_length )
-            : type( type ), size( size ), byte_length( byte_length )
-        {}
+		vm_operand(vm_operand_type type, size_t size, size_t byte_length)
+			: type(type), size(size), byte_length(byte_length)
+		{}
     };
 
     // This struct describes the virtual instruction's instace information.

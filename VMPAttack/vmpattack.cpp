@@ -139,7 +139,7 @@ namespace vmpattack
 
         // Copy each section.
         //
-        for ( const vtil::section_descriptor& section : image )
+        for ( const vtil::section_descriptor& section : image.sections() )
         {
             // Sanity check for potentially broken PEs.
             //
@@ -169,7 +169,7 @@ namespace vmpattack
     bool vmpattack::lift_block( vm_instance* instance, vtil::basic_block* block, vm_context* context, uint64_t first_handler_rva, std::vector<vtil::vip_t> explored_blocks )
     {
 #ifdef VMPATTACK_VERBOSE_0
-        vtil::logger::log<vtil::logger::CON_CYN>( "==> Lifting Basic Block @ VIP RVA 0x%llx and Handler RVA 0x%llx\r\n", context->vip - image_base, first_handler_rva );
+        vtil::logger::log<vtil::logger::CON_CYN>( "==> Lifting Basic Block @ VIP RVA 0x%X and Handler RVA 0x%X\r\n", context->vip - image_base, first_handler_rva );
 #endif
 
         // Add current block to explored list.
@@ -492,7 +492,7 @@ namespace vmpattack
     std::optional<vtil::routine*> vmpattack::lift( const lifting_job& job )
     {
 #ifdef VMPATTACK_VERBOSE_0
-        vtil::logger::log<vtil::logger::CON_CYN>( "=> Began Lifting Job for RVA 0x%llx with stub 0x%llx\r\n", job.vmentry_rva, job.entry_stub );
+        vtil::logger::log<vtil::logger::CON_CYN>( "=> Began Lifting Job for RVA 0x%X with stub 0x%X\r\n", job.vmentry_rva, job.entry_stub );
 #endif
 
         return lift_internal( job.vmentry_rva, job.entry_stub, nullptr );
@@ -572,7 +572,7 @@ namespace vmpattack
         //
         auto within_potential_vmp_sections = [&]( uint64_t rva ) -> bool
         {
-            auto [rva_section, rva_section_size] = image.rva_to_section( rva );
+            auto rva_section = image.rva_to_section( rva );
 
             for ( const vtil::section_descriptor& section : potential_vmp_sections )
                 if ( rva_section.name == section.name )
@@ -583,8 +583,8 @@ namespace vmpattack
 
         // Enumerate all sections.
         //
-        for ( const vtil::section_descriptor& section : image )
-            if ( is_vmp_section( sanitize_section_name( section.name ) ) )
+        for ( const vtil::section_descriptor& section : image.sections() )
+            if ( is_vmp_section( sanitize_section_name( std::string(section.name) ) ) )
                 potential_vmp_sections.push_back( section );
 
         // Iterate through each instruction.
@@ -630,9 +630,9 @@ namespace vmpattack
 
         // Find target section.
         //
-        for ( const vtil::section_descriptor& section : image )
+        for ( const vtil::section_descriptor& section : image.sections() )
         {
-            if ( sanitize_section_name( section.name ) == sanitized_section_name )
+            if ( sanitize_section_name(std::string (section.name) ) == sanitized_section_name )
             {
                 target_section = section;
                 break;
@@ -662,7 +662,7 @@ namespace vmpattack
 
         // Enumerate all sections.
         //
-        for ( const vtil::section_descriptor& section : image )
+        for ( const vtil::section_descriptor& section : image.sections() )
         {
             if ( section.execute )
             {

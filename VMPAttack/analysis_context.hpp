@@ -449,7 +449,7 @@ namespace vmpattack
         //              src:    the memory source register.
         //              size:   the size of the destination.
         //
-        analysis_context* fetch_memory( inout<x86_reg> dst, inout<x86_reg> src, inout<size_t> size )
+        analysis_context* fetch_memory( inout<x86_reg> dst, inout<x86_reg> src, inout<uint64_t> size )
         {
             // mov(zx) %size:%dst, [%src]
             //
@@ -494,7 +494,7 @@ namespace vmpattack
         //              src:    the memory source register.
         //              size:   the size of the source.
         //
-        analysis_context* store_memory( inout<x86_reg> dst, inout<x86_reg> src, inout<size_t> size )
+        analysis_context* store_memory( inout<x86_reg> dst, inout<x86_reg> src, inout<uint64_t> size )
         {
             // mov(zx) [%dst], %size:%src
             //
@@ -798,7 +798,7 @@ namespace vmpattack
 
                               // .base == rsp && .index = INVALID
                               //
-                              if ( instruction->operand( 1 ).mem.base != X86_REG_RSP
+                              if ( instruction->operand( 1 ).mem.base != (cs_default_mode == CS_MODE_32 ? X86_REG_ESP : X86_REG_RSP)
                                    || instruction->operand( 1 ).mem.index != X86_REG_INVALID )
                                   return false;
 
@@ -845,7 +845,7 @@ namespace vmpattack
                               // operand( 1 ) is rip offsetted, without any other index.
                               // Disp is -( instruction length ).
                               //
-                              if ( instruction->operand( 1 ).mem.base != X86_REG_RIP
+                              if ( instruction->operand( 1 ).mem.base != (cs_default_mode == CS_MODE_32 ? X86_REG_EIP : X86_REG_RIP)
                                    || instruction->operand( 1 ).mem.index != X86_REG_INVALID
                                    || instruction->operand( 1 ).mem.disp != -instruction->ins.size )
                                   return false;
@@ -879,7 +879,7 @@ namespace vmpattack
 
                               // operand( 0 ).reg == rsp
                               //
-                              if ( instruction->operand( 0 ).reg != X86_REG_RSP )
+                              if ( instruction->operand( 0 ).reg != (cs_default_mode == CS_MODE_32 ? X86_REG_ESP : X86_REG_RSP))
                                   return false;
 
                               // %im == imm

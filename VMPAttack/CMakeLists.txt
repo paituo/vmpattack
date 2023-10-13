@@ -1,3 +1,7 @@
+
+add_compile_definitions(VMPATTACK_VERBOSE_0)
+add_compile_definitions(VMPATTACK_VERBOSE_1)
+
 add_executable(VMPAttack
     analysis_context.cpp
     analysis_context.hpp
